@@ -3,7 +3,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/socket.h>
-#include "arm_nnexamples_cifar10_parameter.h"
 
 #define MAX_LEN 3072
 #define PORT 8080
@@ -31,8 +30,9 @@ int main(int argc, char** argv)
    struct sockaddr_in servaddr, client_socket;    // socket create and varification
    sockfd = socket(AF_INET, SOCK_STREAM, 0);
    char* server_ip = argv[1];
-   int client_port = atoi(argv[2]);
-   int num = atoi(argv[3]);
+   int server_port = atoi(argv[2]);
+   int client_port = atoi(argv[3]);
+   int num = atoi(argv[4]);
    if (sockfd == -1) {
        //printf("socket creation failed...\n");
        exit(0);
@@ -43,7 +43,7 @@ int main(int argc, char** argv)
    servaddr.sin_family = AF_INET;
    servaddr.sin_addr.s_addr = inet_addr(server_ip);
    //printf("%s\n", server_ip);
-   servaddr.sin_port = htons(PORT);    // connect the client socket to server socket
+   servaddr.sin_port = htons(server_port);    // connect the client socket to server socket
 
    client_socket.sin_family = AF_INET;
    client_socket.sin_addr.s_addr = htons(INADDR_ANY);
