@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/socket.h>
+#include <sys/time.h>
 
 #define MAX_LEN 3072
 #define PORT 8080
@@ -16,11 +17,10 @@ void func(int sockfd, int num)
    uint8_t img_data[3*32*32] = IMG_DATA;
    for (i = 0; i < num; i++) {
        bzero(buff, sizeof(buff));
-       //printf("length: [%d]\n", sizeof(img_data));
        write(sockfd, img_data, 3072);
        bzero(buff, sizeof(buff));
        read(sockfd, buff, sizeof(buff));
-       //printf("From Server : %s", buff);
+	   printf("result:%s\n", buff);
    }
 }
 
@@ -28,26 +28,26 @@ int main(int argc, char** argv)
 {
    int sockfd, connfd;
    struct sockaddr_in servaddr, client_socket;    // socket create and varification
+   struct timeval start;
+   struct timeval end;
+   unsigned long latency;
+
+   gettimeofday(&start, NULL);
    sockfd = socket(AF_INET, SOCK_STREAM, 0);
    char* server_ip = argv[1];
    int server_port = atoi(argv[2]);
    int client_port = atoi(argv[3]);
    int num = atoi(argv[4]);
    if (sockfd == -1) {
-       //printf("socket creation failed...\n");
        exit(0);
    }
-   else
-       printf("Socket successfully created..\n");
    bzero(&servaddr, sizeof(servaddr));    // assign IP, PORT
    servaddr.sin_family = AF_INET;
    servaddr.sin_addr.s_addr = inet_addr(server_ip);
-   //printf("%s\n", server_ip);
    servaddr.sin_port = htons(server_port);    // connect the client socket to server socket
 
    client_socket.sin_family = AF_INET;
    client_socket.sin_addr.s_addr = htons(INADDR_ANY);
-   //printf("%d\n", client_port);
    client_socket.sin_port = htons(client_port);
 
    int err_log =bind(sockfd, (struct sockaddr*)&client_socket, sizeof(client_socket));
@@ -57,11 +57,11 @@ int main(int argc, char** argv)
 	   exit(-1);
    }
    if (connect(sockfd, (SA*)&servaddr, sizeof(servaddr)) != 0) {
-       //printf("connection with the server failed...\n");
        exit(0);
    }
-   else
-       printf("connected to the server..\n");    // function for chat
    func(sockfd, num);    // close the socket
    close(sockfd);
+   gettimeofday(&end, NULL);
+   latency = 1000000*(end.tv_sec - start.tv_sec) + end.tv_usec - start.tv_usec;
+   printf("latency per request: %ld\n", latency/num);
 }

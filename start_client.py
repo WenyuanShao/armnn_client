@@ -19,6 +19,9 @@ class client(object):
         self.args.extend([str(client_port)])
         self.args.extend([str(nb_requests)])
         print self.args
+        self.log_file_path, log_file = self.create_log()
+        self.p = subprocess.Popen(self.args, stdout=log_file)
+        log_file.close
 
     def stop(self):
         while self.process.poll() is None:
