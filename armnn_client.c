@@ -42,8 +42,9 @@ void func(int sockfd, int num)
 	   overall += latency[i];
    }
    qsort(latency, num, sizeof(unsigned long), compare);
-   printf("result:%srequest num: %d\n", buff, num);
-   printf("99%% latency: %ld us, overall latency: %ldus\n", latency[(int)(num*0.99)], overall);
+   printf("result:%c\nrequest num: %d\n", buff[0], num);
+   printf("  99%%     %ld\ntotal request latency: %ld\n", latency[(int)(num*0.99)], overall);
+   printf("Time per request: %ld\n", overall/num);
 }
 
 int main(int argc, char** argv)
@@ -66,7 +67,7 @@ int main(int argc, char** argv)
    servaddr.sin_family = AF_INET;
    servaddr.sin_addr.s_addr = inet_addr(server_ip);
    servaddr.sin_port = htons(server_port);    // connect the client socket to server socket
-
+   
    client_socket.sin_family = AF_INET;
    client_socket.sin_addr.s_addr = htons(INADDR_ANY);
    client_socket.sin_port = htons(client_port);
@@ -77,9 +78,12 @@ int main(int argc, char** argv)
 	   close(sockfd);
 	   exit(-1);
    }
+
    if (connect(sockfd, (struct sockaddr*)&servaddr, sizeof(servaddr)) != 0) {
+       printf("connect error\n");
        exit(0);
    }
+
    func(sockfd, num);    // close the socket
    close(sockfd);
    end = ps_tsc();
