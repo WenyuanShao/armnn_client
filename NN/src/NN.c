@@ -16,11 +16,20 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include <assert.h>
 
 unsigned long buf[65536];
 //extern int cifar10(unsigned long buf_addr);
 extern int input(uint8_t *data_set, int len, unsigned long buf_addr);
 #define DATA_SET_LEN 3072
+
+char output_buf[10] = {0};
+char recv_buf[1024] = {0};
+int recv_len = 0;
+int output = 0;
+int curr_recv_len = 0;
+uint8_t image_data[DATA_SET_LEN];
+
 
 int main(void) {
 
@@ -66,7 +75,7 @@ int main(void) {
 	    {
 	        perror("accept");
 	        close(sockfd);
-            exit(-1);
+		exit(-1);
 	    }
 
 	    pid_t pid = fork();
@@ -79,26 +88,22 @@ int main(void) {
 	    	//close(stderr);
 	    	close(sockfd);
 
-	    	char output_buf[10] = {0};
-	        char recv_buf[1024] = {0};
-	        int recv_len = 0;
-	        int output = 0;
-	        int curr_recv_len = 0;
-	        uint8_t image_data[3072];
-
 	        memset(cli_ip, 0, sizeof(cli_ip));
 	        inet_ntop(AF_INET, &client_addr.sin_addr, cli_ip, INET_ADDRSTRLEN);
 	        //printf("client ip=%s,port=%d\n", cli_ip,ntohs(client_addr.sin_port));
 
 	        while (1) {
-	        	while (curr_recv_len < DATA_SET_LEN){
+	            while (curr_recv_len < DATA_SET_LEN){
 	        	    recv_len = recv(connfd, recv_buf, sizeof(recv_buf), 0);
 	        	    memcpy(image_data + curr_recv_len, recv_buf, recv_len);
 	        	    curr_recv_len += recv_len;
 	            }
+		    assert(curr_recv_len == DATA_SET_LEN);
 	            output = input(image_data, DATA_SET_LEN, (unsigned long)buf);
 	            snprintf(output_buf, sizeof(output_buf), "%d\n\n", output);
 	      	    send(connfd, output_buf, sizeof(output_buf), 0);
+                    curr_recv_len = 0;
+                    memset(image_data, 0, DATA_SET_LEN);
 	      	}
 	        close(connfd);
 	        exit(0);
