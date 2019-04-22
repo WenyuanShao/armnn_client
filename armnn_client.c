@@ -43,7 +43,8 @@ void func(int sockfd, int num)
    }
    qsort(latency, num, sizeof(unsigned long), compare);
    printf("result:%c\nrequest num: %d\n", buff[0], num);
-   printf("  99%%     %ld us\ntotal request latency: %ldus\n", latency[(int)(num*0.99)], overall);
+   printf("  99%%     %ld\ntotal request latency: %ld\n", latency[(int)(num*0.99)], overall);
+   printf("Time per request: %ld\n", overall/num);
 }
 
 int main(int argc, char** argv)
