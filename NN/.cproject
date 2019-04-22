@@ -28,9 +28,9 @@
 									<listOptionValue builtIn="false" value="ARM_MATH_CM3"/>
 								</option>
 								<option id="gnu.cpp.compiler.option.include.paths.54762393" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" useByScannerDiscovery="false" valueType="includePath">
-									<listOptionValue builtIn="false" value="/home/shaowy/workspace/NN/src/CMSIS_5/CMSIS/DSP/Include"/>
-									<listOptionValue builtIn="false" value="/home/shaowy/workspace/NN/src/CMSIS_5/CMSIS/Core/Include"/>
-									<listOptionValue builtIn="false" value="/home/shaowy/workspace/NN/src/CMSIS_5/CMSIS/NN/Include"/>
+									<listOptionValue builtIn="false" value="/users/graceliu/armnn_expr/NN/src/CMSIS_5/CMSIS/DSP/Include"/>
+									<listOptionValue builtIn="false" value="/users/graceliu/armnn_expr/NN/src/CMSIS_5/CMSIS/Core/Include"/>
+									<listOptionValue builtIn="false" value="/users/graceliu/armnn_expr/NN/src/CMSIS_5/CMSIS/NN/Include"/>
 								</option>
 								<option id="gnu.cpp.compiler.option.dialect.flags.1707518114" name="Other dialect flags" superClass="gnu.cpp.compiler.option.dialect.flags" useByScannerDiscovery="true" value="" valueType="string"/>
 								<option id="gnu.cpp.compiler.option.optimization.flags.907403056" name="Other optimization flags" superClass="gnu.cpp.compiler.option.optimization.flags" useByScannerDiscovery="false" value="" valueType="string"/>
@@ -40,9 +40,9 @@
 								<option defaultValue="gnu.c.optimization.level.none" id="gnu.c.compiler.exe.debug.option.optimization.level.391327741" name="Optimization Level" superClass="gnu.c.compiler.exe.debug.option.optimization.level" useByScannerDiscovery="false" value="gnu.c.optimization.level.most" valueType="enumerated"/>
 								<option id="gnu.c.compiler.exe.debug.option.debugging.level.1648198682" name="Debug Level" superClass="gnu.c.compiler.exe.debug.option.debugging.level" useByScannerDiscovery="false" value="gnu.c.debugging.level.max" valueType="enumerated"/>
 								<option id="gnu.c.compiler.option.include.paths.1630080588" name="Include paths (-I)" superClass="gnu.c.compiler.option.include.paths" useByScannerDiscovery="false" valueType="includePath">
-									<listOptionValue builtIn="false" value="/home/shaowy/workspace/NN/src/CMSIS_5/CMSIS/DSP/Include"/>
-									<listOptionValue builtIn="false" value="/home/shaowy/workspace/NN/src/CMSIS_5/CMSIS/Core/Include"/>
-									<listOptionValue builtIn="false" value="/home/shaowy/workspace/NN/src/CMSIS_5/CMSIS/NN/Include"/>
+									<listOptionValue builtIn="false" value="/users/graceliu/armnn_expr/NN/src/CMSIS_5/CMSIS/DSP/Include"/>
+									<listOptionValue builtIn="false" value="/users/graceliu/armnn_expr/NN/src/CMSIS_5/CMSIS/Core/Include"/>
+									<listOptionValue builtIn="false" value="/users/graceliu/armnn_expr/NN/src/CMSIS_5/CMSIS/NN/Include"/>
 								</option>
 								<option id="gnu.c.compiler.option.dialect.std.372323124" name="Language standard" superClass="gnu.c.compiler.option.dialect.std" useByScannerDiscovery="true" value="gnu.c.compiler.dialect.c99" valueType="enumerated"/>
 								<option id="gnu.c.compiler.option.preprocessor.def.symbols.147064858" name="Defined symbols (-D)" superClass="gnu.c.compiler.option.preprocessor.def.symbols" useByScannerDiscovery="false" valueType="definedSymbols">
