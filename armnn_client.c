@@ -32,8 +32,8 @@ void func(int sockfd, int num)
    int i = 0;
    uint8_t img_data[3*32*32] = IMG_DATA;
    for (i = 0; i < num; i++) {
-       start = ps_tsc();
        bzero(buff, sizeof(buff));
+       start = ps_tsc();
        write(sockfd, img_data, 3072);
        bzero(buff, sizeof(buff));
        read(sockfd, buff, sizeof(buff));
