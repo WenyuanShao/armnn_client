@@ -23,11 +23,12 @@ int compare(const void* a, const void* b) {
 	return (*(int*)a - *(int*)b);
 }
 
+unsigned long inference = 0;
+
 void func(int sockfd, int num)
 {
    char buff[MAX_LEN];
    unsigned long latency[num];
-   unsigned long overall = 0;
    unsigned long long start, end;
    int i = 0;
    uint8_t img_data[3*32*32] = IMG_DATA;
@@ -39,12 +40,12 @@ void func(int sockfd, int num)
        read(sockfd, buff, sizeof(buff));
 	   end = ps_tsc();
 	   latency[i] = (unsigned long)((end-start)/2400);
-	   overall += latency[i];
+	   inference += latency[i];
    }
    qsort(latency, num, sizeof(unsigned long), compare);
    printf("result:%c\nrequest num: %d\n", buff[0], num);
-   printf("  99%%     %ld\ntotal request latency: %ld\n", latency[(int)(num*0.99)], overall);
-   printf("Time per request: %ld\n", overall/num);
+   printf("  99%%     %ld\ntotal request latency: %ld\n", latency[(int)(num*0.99)], inference);
+   printf("Time per request: %ld\n", inference/num);
 }
 
 int main(int argc, char** argv)
@@ -88,5 +89,7 @@ int main(int argc, char** argv)
    close(sockfd);
    end = ps_tsc();
    latency = end - start;
-   printf("overall latency: %ldus\n", (unsigned long)(latency/2400));
+   printf("overall latency: %ld\n", (unsigned long)(latency/2400));
+   printf("Request per second: %ld\n", (unsigned long)1000000000/(inference/num));
+   printf("fork and connection overhead: %ld\n", (unsigned long)latency-inference);
 }
