@@ -29,7 +29,17 @@ int recv_len = 0;
 int output = 0;
 int curr_recv_len = 0;
 uint8_t image_data[DATA_SET_LEN];
+unsigned long long start, end;
 
+static inline uint64_t
+ps_tsc(void)
+{
+	unsigned long a, d, c;
+
+	__asm__ __volatile__("rdtsc" : "=a" (a), "=d" (d), "=c" (c) : : );
+
+	return ((uint64_t)d << 32) | (uint64_t)a;
+}
 
 int main(void) {
 
@@ -99,8 +109,12 @@ int main(void) {
 	        	    curr_recv_len += recv_len;
 	            }
 		    assert(curr_recv_len == DATA_SET_LEN);
+		    start =ps_tsc();
 	            output = input(image_data, DATA_SET_LEN, (unsigned long)buf);
-	            snprintf(output_buf, sizeof(output_buf), "%d\n\n", output);
+                    end = ps_tsc();
+	            unsigned long long temp = (end-start)/2400;
+                    //printf("#: %lld\r\n", temp);
+	            snprintf(output_buf, sizeof(output_buf), "%d\r\n", output);
 	      	    send(connfd, output_buf, sizeof(output_buf), 0);
                     curr_recv_len = 0;
                     memset(image_data, 0, DATA_SET_LEN);
