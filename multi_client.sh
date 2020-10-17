@@ -14,4 +14,4 @@ python start_client.py \
 		--nb_cores $1 \
 		--nb_request 10 \
 		--nb_client $2 \
-		--first_client_port 11211 \
+		--first_client_port 8888 \

@@ -4,6 +4,8 @@
 #include <string.h>
 #include <sys/socket.h>
 #include <sys/time.h>
+#include <arpa/inet.h>
+#include <unistd.h>
 
 #define MAX_LEN 3072
 //#define PORT 8080
@@ -25,19 +27,25 @@ int compare(const void* a, const void* b) {
 
 unsigned long inference = 0;
 
-void func(int sockfd, int num)
+void func(int sockfd, int num, struct sockaddr_in *servaddr)
 {
    char buff[MAX_LEN];
    unsigned long latency[num];
    unsigned long long start, end;
    int i = 0;
+   socklen_t len = 0;
    uint8_t img_data[3*32*32] = IMG_DATA;
    for (i = 0; i < num; i++) {
        bzero(buff, sizeof(buff));
        start = ps_tsc();
-       write(sockfd, img_data, 3072, 0);
-       bzero(buff, sizeof(buff));
-       read(sockfd, buff, sizeof(buff));
+
+       sendto(sockfd, img_data, 3072, 0, (struct sockaddr*)servaddr, sizeof(servaddr));
+       
+	   bzero(buff, sizeof(buff));
+
+	   len = sizeof(servaddr);
+       recvfrom(sockfd, buff, sizeof(buff), 0, (struct sockaddr *)servaddr, &len);
+
 	   end = ps_tsc();
 	   latency[i] = (unsigned long)((end-start)/2400);
 	   inference += latency[i];
@@ -50,13 +58,13 @@ void func(int sockfd, int num)
 
 int main(int argc, char** argv)
 {
-   int sockfd, connfd;
+   int sockfd;
    struct sockaddr_in servaddr, client_socket;    // socket create and varification
    unsigned long long start, end;
    unsigned long long latency;
 
    start = ps_tsc();
-   sockfd = socket(AF_INET, SOCK_STREAM, 0);
+   sockfd = socket(AF_INET, SOCK_DGRAM, 0);
    char* server_ip = argv[1];
    int server_port = atoi(argv[2]);
    int client_port = atoi(argv[3]);
@@ -70,7 +78,7 @@ int main(int argc, char** argv)
    servaddr.sin_port = htons(server_port);    // connect the client socket to server socket
    
    client_socket.sin_family = AF_INET;
-   client_socket.sin_addr.s_addr = htons(INADDR_ANY);
+   client_socket.sin_addr.s_addr = inet_addr("10.10.1.1");
    client_socket.sin_port = htons(client_port);
 
    int err_log =bind(sockfd, (struct sockaddr*)&client_socket, sizeof(client_socket));
@@ -80,16 +88,13 @@ int main(int argc, char** argv)
 	   exit(-1);
    }
 
-   if (connect(sockfd, (struct sockaddr*)&servaddr, sizeof(servaddr)) != 0) {
-       printf("connect error\n");
-       exit(0);
-   }
-
-   func(sockfd, num);    // close the socket
+   func(sockfd, num, &servaddr);    // close the socket
    close(sockfd);
    end = ps_tsc();
    latency = end - start;
    printf("overall latency: %ld\n", (unsigned long)(latency/2400));
    printf("Request per second: %ld\n", (unsigned long)1000000000/(inference/num));
    printf("fork and connection overhead: %ld\n", (unsigned long)latency-inference);
+
+   return 0;
 }
