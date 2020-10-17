@@ -35,7 +35,7 @@ void func(int sockfd, int num)
    for (i = 0; i < num; i++) {
        bzero(buff, sizeof(buff));
        start = ps_tsc();
-       write(sockfd, img_data, 3072);
+       write(sockfd, img_data, 3072, 0);
        bzero(buff, sizeof(buff));
        read(sockfd, buff, sizeof(buff));
 	   end = ps_tsc();

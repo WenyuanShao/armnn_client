@@ -9,8 +9,8 @@ rm -rf *
 cd ..
 
 python start_client.py \
-		-s 10.10.1.7 \
-		-p 8080 \
+		-s 10.10.1.2 \
+		-p 11211 \
 		--nb_cores $1 \
 		--nb_request 10 \
 		--nb_client $2 \
